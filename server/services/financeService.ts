@@ -39,19 +39,33 @@ export async function getFinancialNews(limit = 10) {
 export async function getMarketNews(limit = 10) {
   try {
     const response = await fetch(
-      `https://financialmodelingprep.com/api/v3/stock_news?limit=${limit}&apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
+      `https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=${limit}&apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
     );
+
     if (!response.ok) {
       throw new Error(`Financial Modeling Prep API error: ${response.status}`);
     }
 
     const data = await response.json();
-    return data || [];
+    console.log("FMP News Raw Response:", data);
+
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    // If it's an object that wraps the actual array
+    if (data.articles && Array.isArray(data.articles)) {
+      return data.articles;
+    }
+
+    // Return an empty array as fallback
+    return [];
   } catch (error) {
     console.error('Error fetching market news:', error);
     throw error;
   }
 }
+
 
 // Alpha Vantage API for mutual fund data
 export async function getMutualFundData(symbol: string) {
@@ -95,7 +109,7 @@ export async function getMutualFundScreener() {
 export async function getETFHoldings(symbol: string) {
   try {
     const response = await fetch(
-      `https://financialmodelingprep.com/api/v3/etf-holder/${symbol}?apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
+      `https://financialmodelingprep.com/stable/search-symbol?query=${symbol}}&apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
     );
 
     if (!response.ok) {
@@ -132,9 +146,10 @@ export async function getStockTimeSeries(symbol: string, interval = 'daily', out
 // Financial Modeling Prep API for financial ratios
 export async function getFinancialRatios(symbol: string) {
   try {
-    const response = await fetch(
-      `https://financialmodelingprep.com/api/v3/ratios/${symbol}?apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
-    );
+const response = await fetch(
+  `https://financialmodelingprep.com/stable/ratios?symbol=AAPL&apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
+);
+
 
     if (!response.ok) {
       throw new Error(`Financial Modeling Prep API error: ${response.status}`);
@@ -152,7 +167,7 @@ export async function getFinancialRatios(symbol: string) {
 export async function getTopETFs() {
   try {
     const response = await fetch(
-      `https://financialmodelingprep.com/api/v3/etf/list?apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
+      `https://financialmodelingprep.com/stable/biggest-gainers?apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
     );
 
     if (!response.ok) {
@@ -173,11 +188,11 @@ export async function getResearchReports(): Promise<ResearchReport[]> {
   try {
     // Get market data from FMP API to use as the basis for our research reports
     const etfResponse = await fetch(
-      `https://financialmodelingprep.com/api/v3/etf/list?apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
+      `https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=${limit}&apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
     );
     
     const stockNewsResponse = await fetch(
-      `https://financialmodelingprep.com/api/v3/stock_news?limit=50&apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
+      `https://financialmodelingprep.com/stable/financial-reports-dates?symbol=AAPL&apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
     );
 
     if (!etfResponse.ok || !stockNewsResponse.ok) {
