@@ -184,7 +184,7 @@ export async function getTopETFs() {
 }
 
 // Generate research reports using Financial Modeling Prep API data and market insights
-export async function getResearchReports(): Promise<ResearchReport[]> {
+export async function getResearchReports(limit = 10): Promise<ResearchReport[]> {
   try {
     // Get market data from FMP API to use as the basis for our research reports
     const etfResponse = await fetch(
