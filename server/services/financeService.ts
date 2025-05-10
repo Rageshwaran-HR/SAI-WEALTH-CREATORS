@@ -28,7 +28,9 @@ export async function getFinancialNews(limit = 10) {
     }
 
     const data = await response.json();
-    return data.feed || [];
+    console.log('Alpha Vantage API Response:', data);
+
+    return Array.isArray(data.feed) ? data.feed : [];
   } catch (error) {
     console.error('Error fetching financial news:', error);
     throw error;
@@ -38,8 +40,16 @@ export async function getFinancialNews(limit = 10) {
 // Financial Modeling Prep API for market news
 export async function getMarketNews(limit = 10) {
   try {
+    console.log('Using API Key:', FINANCIAL_MODELING_PREP_API_KEY);
     const response = await fetch(
-      `https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=${limit}&apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
+      `https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=${limit}&apikey=${FINANCIAL_MODELING_PREP_API_KEY}`,
+      {
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'no-cache', // Prevent caching
+          Pragma: 'no-cache',          // HTTP 1.0 compatibility
+        },
+      }
     );
 
     if (!response.ok) {
@@ -47,25 +57,18 @@ export async function getMarketNews(limit = 10) {
     }
 
     const data = await response.json();
-    console.log("FMP News Raw Response:", data);
+    console.log('FMP API Response:', data);
 
     if (Array.isArray(data)) {
       return data;
     }
 
-    // If it's an object that wraps the actual array
-    if (data.articles && Array.isArray(data.articles)) {
-      return data.articles;
-    }
-
-    // Return an empty array as fallback
-    return [];
+    return Array.isArray(data.articles) ? data.articles : [];
   } catch (error) {
     console.error('Error fetching market news:', error);
     throw error;
   }
 }
-
 
 // Alpha Vantage API for mutual fund data
 export async function getMutualFundData(symbol: string) {
