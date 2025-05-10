@@ -28,12 +28,15 @@ router.get('/news/financial', async (req, res) => {
 // Get market news from Financial Modeling Prep
 router.get('/news/market', async (req, res) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-    const news = await getMarketNews(limit);
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate'); // Disable caching
+    res.set('Pragma', 'no-cache'); // HTTP 1.0 compatibility
+    res.set('Expires', '0');       // Expire immediately
+
+    const news = await getMarketNews();
     res.json(news);
   } catch (error) {
     console.error('Error in market news route:', error);
-    res.status(500).json({ error: 'Failed to fetch market news' });
+    res.status(500).json({ error: 'Failed to fetch market news. Please try again later.' });
   }
 });
 
