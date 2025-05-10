@@ -128,20 +128,27 @@ const {
   queryKey: ['/api/finance/news/market'],
   queryFn: async () => {
     try {
-        const res = await fetch('/api/finance/news/market');
-        if (!res.ok) throw new Error('Failed to fetch market news');
-        const data = await res.json();
+      const res = await fetch('/api/finance/news/market', {
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'no-cache', // Prevent caching
+          Pragma: 'no-cache',          // HTTP 1.0 compatibility
+        },
+      });
 
-        if (!data.content || !Array.isArray(data.content)) {
-            console.warn('Market news content is undefined or not an array:', data);
-            return []; // Return an empty array if content is invalid
-        }
+      if (!res.ok) throw new Error('Failed to fetch market news');
+      const data = await res.json();
 
-        console.log('Market news fetched successfully:', data);
-        return data.content as FMPNewsItem[];
+      if (!data || !Array.isArray(data)) {
+        console.warn('Market news data is invalid:', data);
+        return [];
+      }
+
+      console.log('Market news fetched successfully:', data);
+      return data;
     } catch (error) {
-        console.error('Error fetching market news:', error);
-        throw error; // Ensure the error is propagated
+      console.error('Error fetching market news:', error);
+      throw error;
     }
   }
 });
