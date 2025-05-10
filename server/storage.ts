@@ -40,7 +40,7 @@ export const storage = {
       
       // Apply category filter if provided
       if (category && category !== 'All Categories') {
-        query = query.where(eq(schema.articles.category, category));
+        query = query.where(eq(schema.articles.category, category)) as typeof query;
       }
       
       const articles = await query
@@ -92,7 +92,7 @@ export const storage = {
       let query = db.select().from(schema.testimonials);
       
       if (featuredOnly) {
-        query = query.where(eq(schema.testimonials.featured, true));
+        query = query.where(eq(schema.testimonials.featured, true)) as typeof query;
       }
       
       const testimonials = await query.orderBy(desc(schema.testimonials.createdAt));
@@ -110,7 +110,7 @@ export const storage = {
       let query = db.select().from(schema.faqs);
       
       if (category) {
-        query = query.where(eq(schema.faqs.category, category));
+        query = query.where(eq(schema.faqs.category, category)) as typeof query;
       }
       
       const faqs = await query.orderBy(asc(schema.faqs.sortOrder));
@@ -144,7 +144,7 @@ export const storage = {
       
       // Apply status filter if provided
       if (status) {
-        query = query.where(eq(schema.contactSubmissions.status, status));
+        query = query.where(eq(schema.contactSubmissions.status, status)) as typeof query;
       }
       
       const submissions = await query
