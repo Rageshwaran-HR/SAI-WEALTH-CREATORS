@@ -157,7 +157,7 @@ const {
 
   
   // Convert Alpha Vantage news to our unified format
-const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNews) 
+const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNews) && alphaVantageNews.length > 0
   ? alphaVantageNews.map((item: AlphaVantageNewsItem, index: number) => {
       let category = "Market News";
       if (Array.isArray(item.topics) && item.topics.length > 0) {
