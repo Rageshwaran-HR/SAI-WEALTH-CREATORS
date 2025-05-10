@@ -108,6 +108,7 @@ const News = () => {
         const res = await fetch('/api/finance/news/financial');
         if (!res.ok) throw new Error('Failed to fetch financial news');
         const data = await res.json();
+        console.log('Alpha Vantage News:', data); // Log Alpha Vantage data
         return data as AlphaVantageNewsItem[];
       } catch (error) {
         console.error('Error fetching financial news:', error);
@@ -116,36 +117,33 @@ const News = () => {
     }
   });
   
-// Fetch Financial Modeling Prep market news
-const { 
-  data: fmpNews, 
-  isLoading: isLoadingFMP,
-  isError: isErrorFMP,
-  error: errorFMP,
-  refetch: refetchFMP
-} = useQuery({
-  queryKey: ['/api/finance/news/market'],
- queryFn: async () => {
-  try {
-    const res = await fetch('/api/finance/news/market');
-    if (!res.ok) throw new Error('Failed to fetch market news');
-    const data = await res.json();
-    
-    if (!data || !Array.isArray(data.content)) {
-      console.warn('FMP response missing content array:', data);
-      return []; // <- safe fallback
+  // Fetch Financial Modeling Prep market news
+  const { 
+    data: fmpNews, 
+    isLoading: isLoadingFMP,
+    isError: isErrorFMP,
+    error: errorFMP,
+    refetch: refetchFMP
+  } = useQuery({
+    queryKey: ['/api/finance/news/market'],
+    queryFn: async () => {
+      try {
+        const res = await fetch('/api/finance/news/market');
+        if (!res.ok) throw new Error('Failed to fetch market news');
+        const data = await res.json();
+        console.log('FMP News:', data); // Log FMP data
+        if (!data || !Array.isArray(data.content)) {
+          console.warn('FMP response missing content array:', data);
+          return []; // Safe fallback
+        }
+        return data.content as FMPNewsItem[];
+      } catch (error) {
+        console.error('Error fetching market news:', error);
+        return []; // Ensures it's never undefined
+      }
     }
+  });
 
-    return data.content as FMPNewsItem[];
-  } catch (error) {
-    console.error('Error fetching market news:', error);
-    return []; // <- ensures it's never undefined
-  }
-}
-
-});
-
-  
   // Convert Alpha Vantage news to our unified format
   const processedAlphaVantageNews: NewsItem[] = (alphaVantageNews || []).map((item: AlphaVantageNewsItem, index: number) => {
     // Extract topic with highest relevance as the category
