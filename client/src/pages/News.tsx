@@ -127,31 +127,32 @@ const {
 } = useQuery({
   queryKey: ['/api/finance/news/market'],
   queryFn: async () => {
-    try {
-      const res = await fetch('/api/finance/news/market', {
-        method: 'GET',
-        headers: {
-          'Cache-Control': 'no-cache', // Prevent caching
-          Pragma: 'no-cache',          // HTTP 1.0 compatibility
-        },
-      });
+  try {
+    const res = await fetch('/api/finance/news/market', {
+      method: 'GET',
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+      },
+    });
 
-      if (!res.ok) throw new Error('Failed to fetch market news');
-        const data = await res.json();
+    if (!res.ok) throw new Error('Failed to fetch market news');
+    const data = await res.json();
 
-        if (!data || !Array.isArray(data.content)) {
-          console.warn('Market news data is invalid:', data);
-          return [];
-        }
-
-        console.log('Market news fetched successfully:', data.content);
-        return data.content;
-
-    } catch (error) {
-      console.error('Error fetching market news:', error);
-      throw error;
+    if (!data || !Array.isArray(data)) {
+      console.warn('Market news data is invalid:', data);
+      return [];
     }
+
+    console.log('Market news fetched successfully:', data);
+    return data;
+
+  } catch (error) {
+    console.error('Error fetching market news:', error);
+    throw error;
   }
+}
+
 });
 
   
