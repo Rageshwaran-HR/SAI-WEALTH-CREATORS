@@ -39,8 +39,9 @@ export async function getFinancialNews(limit = 10) {
 export async function getMarketNews(limit = 10) {
   try {
     const response = await fetch(
-`https://newsapi.org/v2/everything?q=market&apiKey=${FINANCIAL_MODELING_PREP_API_KEY}`    );
-    
+      `https://financialmodelingprep.com/stable/search-symbol?query=AAPL&apikey=${FINANCIAL_MODELING_PREP_API_KEY}`
+    );
+
     if (!response.ok) {
       throw new Error(`Financial Modeling Prep API error: ${response.status}`);
     }
