@@ -116,27 +116,35 @@ const News = () => {
     }
   });
   
-  // Fetch Financial Modeling Prep market news
-  const { 
-    data: fmpNews, 
-    isLoading: isLoadingFMP,
-    isError: isErrorFMP,
-    error: errorFMP,
-    refetch: refetchFMP
-  } = useQuery({
-    queryKey: ['/api/finance/news/market'],
-    queryFn: async () => {
-      try {
-        const res = await fetch('/api/finance/news/market');
-        if (!res.ok) throw new Error('Failed to fetch market news');
-        const data = await res.json();
-        return data as FMPNewsItem[];
-      } catch (error) {
-        console.error('Error fetching market news:', error);
-        return [] as FMPNewsItem[];
-      }
+// Fetch Financial Modeling Prep market news
+const { 
+  data: fmpNews, 
+  isLoading: isLoadingFMP,
+  isError: isErrorFMP,
+  error: errorFMP,
+  refetch: refetchFMP
+} = useQuery({
+  queryKey: ['/api/finance/news/market'],
+ queryFn: async () => {
+  try {
+    const res = await fetch('/api/finance/news/market');
+    if (!res.ok) throw new Error('Failed to fetch market news');
+    const data = await res.json();
+    
+    if (!data || !Array.isArray(data.content)) {
+      console.warn('FMP response missing content array:', data);
+      return []; // <- safe fallback
     }
-  });
+
+    return data.content as FMPNewsItem[];
+  } catch (error) {
+    console.error('Error fetching market news:', error);
+    return []; // <- ensures it's never undefined
+  }
+}
+
+});
+
   
   // Convert Alpha Vantage news to our unified format
   const processedAlphaVantageNews: NewsItem[] = (alphaVantageNews || []).map((item: AlphaVantageNewsItem, index: number) => {
