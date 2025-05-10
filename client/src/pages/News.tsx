@@ -163,7 +163,7 @@ const {
 const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNewsRaw)
   ? alphaVantageNewsRaw.map((item: AlphaVantageNewsItem, index: number) => {
       let category = 'Market News';
-      if (Array.isArray(item.topics) && item.topics.length > 0) {
+      if (Array.isArray(item.topics)) {
         const sortedTopics = [...item.topics].sort(
           (a, b) => parseFloat(b.relevance_score) - parseFloat(a.relevance_score)
         );
