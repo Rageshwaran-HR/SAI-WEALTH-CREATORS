@@ -105,7 +105,7 @@ const News = () => {
     queryKey: ['/api/finance/news/financial'],
     queryFn: async () => {
       try {
-        const res = await fetch('/api/finance/news/financial');
+        const res = await fetch('https://sai-wealth-creators.onrender.com/api/finance/news/financial');
         if (!res.ok) throw new Error('Failed to fetch financial news');
         const data = await res.json();
         console.log('Financial news fetched successfully:', data); // Log success
@@ -128,7 +128,7 @@ const {
   queryKey: ['/api/finance/news/market'],
   queryFn: async () => {
     try {
-      const res = await fetch('/api/finance/news/market', {
+      const res = await fetch('https://sai-wealth-creators.onrender.com/api/finance/news/market', {
         method: 'GET',
         headers: {
           'Cache-Control': 'no-cache', // Prevent caching
