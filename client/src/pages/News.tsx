@@ -163,7 +163,7 @@ const {
 const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNewsRaw)
   ? alphaVantageNewsRaw.map((item: AlphaVantageNewsItem, index: number) => {
       let category = 'Market News';
-      if (Array.isArray(item.topics)) {
+      if (Array.isArray(item.topics) && item.topics.length > 0) {
         const sortedTopics = [...item.topics].sort(
           (a, b) => parseFloat(b.relevance_score) - parseFloat(a.relevance_score)
         );
@@ -173,7 +173,7 @@ const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNewsRaw)
       return {
         id: `av-${index}`,
         title: item.title,
-        excerpt: item.summary,
+        excerpt: item.summary || 'No summary available.',
         category,
         date: formatDate(item.time_published),
         image: item.banner_image || DEFAULT_IMAGE,
@@ -182,16 +182,16 @@ const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNewsRaw)
         slug: generateSlug(item.title),
       };
     })
-  : [];
+  : []; // Fallback to an empty array if alphaVantageNewsRaw is not an array
 
-// Convert FMP news to our unified format
+// Process Financial Modeling Prep news to unified format
 const processedFMPNews: NewsItem[] = Array.isArray(fmpNews)
   ? fmpNews.map((item: FMPNewsItem, index: number) => {
       return {
         id: `fmp-${index}`,
         title: item.title,
-        excerpt: item.text,
-        category: item.symbol ? "Stocks" : "Market News",
+        excerpt: item.text || 'No excerpt available.',
+        category: item.symbol ? 'Stocks' : 'Market News',
         date: formatDate(item.publishedDate),
         image: item.image || DEFAULT_IMAGE,
         url: item.url,
@@ -203,6 +203,14 @@ const processedFMPNews: NewsItem[] = Array.isArray(fmpNews)
   
   // Combine both news sources
   const allNews = [...processedAlphaVantageNews, ...processedFMPNews];
+
+  console.log('Alpha Vantage News:', alphaVantageNewsRaw);
+  console.log('FMP News:', fmpNews);
+  console.log('All News:', allNews);
+
+  if (allNews.length === 0) {
+    console.warn('No news articles available.');
+  }
   
   // Filter news based on search and category
   const filteredNews = allNews.filter(item => {
@@ -406,21 +414,18 @@ const processedFMPNews: NewsItem[] = Array.isArray(fmpNews)
         
         {/* Featured Article */}
         {!isLoading && filteredNews.length > 0 && (
-          <motion.div 
-            className="mb-16"
-            variants={itemFadeIn}
-          >
+          <motion.div className="mb-16" variants={itemFadeIn}>
             <h2 className="font-montserrat font-bold text-2xl text-primary mb-6">Featured Article</h2>
-            <motion.div 
+            <motion.div
               className="bg-white rounded-lg shadow-lg overflow-hidden"
               whileHover={{ y: -5 }}
               transition={{ duration: 0.3 }}
             >
               <div className="grid grid-cols-1 md:grid-cols-2">
                 <div className="h-64 md:h-auto bg-gray-200 overflow-hidden">
-                  <motion.img 
-                    src={filteredNews[0].image} 
-                    alt={filteredNews[0].title} 
+                  <motion.img
+                    src={filteredNews[0].image}
+                    alt={filteredNews[0].title}
                     className="w-full h-full object-cover"
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.5 }}
@@ -428,17 +433,17 @@ const processedFMPNews: NewsItem[] = Array.isArray(fmpNews)
                 </div>
                 <div className="p-8">
                   <div className="flex items-center mb-2">
-                    <Badge variant="secondary" className="bg-primary text-white mr-2">{filteredNews[0].category}</Badge>
+                    <Badge variant="secondary" className="bg-primary text-white mr-2">
+                      {filteredNews[0].category}
+                    </Badge>
                     <span className="text-gray-500 text-sm">{filteredNews[0].date}</span>
                   </div>
                   <h3 className="font-montserrat font-bold text-2xl text-primary mb-3">
                     {filteredNews[0].title}
                   </h3>
-                  <p className="text-gray-600 mb-6">
-                    {filteredNews[0].excerpt}
-                  </p>
+                  <p className="text-gray-600 mb-6">{filteredNews[0].excerpt}</p>
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button 
+                    <Button
                       className="bg-secondary hover:bg-secondary/90 text-primary font-bold"
                       asChild
                     >
@@ -458,6 +463,18 @@ const processedFMPNews: NewsItem[] = Array.isArray(fmpNews)
           <motion.div variants={itemFadeIn}>
             <h2 className="font-montserrat font-bold text-2xl text-primary mb-6">Latest Articles</h2>
             
+            {!isLoading && allNews.length > 0 && (
+              <div>
+                {/* Render news articles */}
+              </div>
+            )}
+
+            {allNews.length === 0 && !isLoading && (
+              <div className="text-center">
+                <p>No news articles available. Please try again later.</p>
+              </div>
+            )}
+
             {filteredNews.length === 0 ? (
               <motion.div 
                 className="text-center py-12 bg-gray-100 rounded-lg"
