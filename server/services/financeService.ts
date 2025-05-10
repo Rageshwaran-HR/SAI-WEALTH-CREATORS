@@ -46,8 +46,8 @@ export async function getMarketNews(limit = 10) {
       {
         method: 'GET',
         headers: {
-          'Cache-Control': 'no-cache', // Prevent caching
-          Pragma: 'no-cache',          // HTTP 1.0 compatibility
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
         },
       }
     );
@@ -59,16 +59,14 @@ export async function getMarketNews(limit = 10) {
     const data = await response.json();
     console.log('FMP API Response:', data);
 
-    if (Array.isArray(data)) {
-      return data;
-    }
-
-    return Array.isArray(data.articles) ? data.articles : [];
+    // ✅ Corrected line here
+    return Array.isArray(data.content) ? data.content : [];
   } catch (error) {
     console.error('Error fetching market news:', error);
     throw error;
   }
 }
+
 
 // Alpha Vantage API for mutual fund data
 export async function getMutualFundData(symbol: string) {
@@ -360,3 +358,4 @@ export async function getResearchReports(limit = 10): Promise<ResearchReport[]> 
     ];
   }
 }
+
