@@ -157,28 +157,30 @@ const {
 
   
   // Convert Alpha Vantage news to our unified format
-  const processedAlphaVantageNews: NewsItem[] = (alphaVantageNews || []).map((item: AlphaVantageNewsItem, index: number) => {
-    // Extract topic with highest relevance as the category
-    let category = "Market News";
-    if (item.topics && item.topics.length > 0) {
-      const sortedTopics = [...item.topics].sort((a, b) => 
-        parseFloat(b.relevance_score) - parseFloat(a.relevance_score)
-      );
-      category = sortedTopics[0].topic;
-    }
-    
-    return {
-      id: `av-${index}`,
-      title: item.title,
-      excerpt: item.summary,
-      category,
-      date: formatDate(item.time_published),
-      image: item.banner_image || DEFAULT_IMAGE,
-      url: item.url,
-      source: item.source,
-      slug: generateSlug(item.title)
-    };
-  });
+const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNews) 
+  ? alphaVantageNews.map((item: AlphaVantageNewsItem, index: number) => {
+      let category = "Market News";
+      if (Array.isArray(item.topics) && item.topics.length > 0) {
+        const sortedTopics = [...item.topics].sort((a, b) => 
+          parseFloat(b.relevance_score) - parseFloat(a.relevance_score)
+        );
+        category = sortedTopics[0].topic;
+      }
+      
+      return {
+        id: `av-${index}`,
+        title: item.title,
+        excerpt: item.summary,
+        category,
+        date: formatDate(item.time_published),
+        image: item.banner_image || DEFAULT_IMAGE,
+        url: item.url,
+        source: item.source,
+        slug: generateSlug(item.title)
+      };
+    })
+  : [];
+
   
   // Convert FMP news to our unified format
   const processedFMPNews: NewsItem[] = (fmpNews || []).map((item: FMPNewsItem, index: number) => {
