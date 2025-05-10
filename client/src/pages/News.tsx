@@ -262,318 +262,179 @@ const {
 
   return (
     <PageTransition>
-    <motion.div 
-      className="py-16 bg-white"
-      initial="hidden"
-      animate="visible"
-      variants={pageTransition}
-    >
-      <div className="container mx-auto">
-        <motion.div 
-          className="text-center mb-12"
-          variants={itemFadeIn}
-        >
-          <h1 className="font-montserrat font-bold text-3xl md:text-5xl text-primary mb-4">Financial News & Insights</h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Stay informed with our latest articles, market updates, and investment insights to make better financial decisions.
-          </p>
-        </motion.div>
-        
-        {/* Search and Filter Section */}
-        <motion.div 
-          className="mb-10 bg-gray-100 p-6 rounded-lg"
-          variants={itemFadeIn}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="col-span-2">
-              <Input 
-                placeholder="Search articles..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full"
-              />
-            </div>
-            <div>
-              <Select 
-                value={categoryFilter}
-                onValueChange={setCategoryFilter}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map(category => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          {/* Refresh button */}
-          {(isLoading || isError) && (
-            <motion.div 
-              className="flex justify-end mt-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Button 
-                size="sm"
-                variant="outline"
-                className="flex items-center gap-2"
-                onClick={handleRefetch}
-                disabled={isLoading}
-              >
-                <RefreshCw className={cn("h-4 w-4", { "animate-spin": isLoading })} />
-                {isLoading ? "Loading..." : "Refresh"}
-              </Button>
-            </motion.div>
-          )}
-          
-          {/* Error message */}
-          {isError && (
-            <motion.div 
-              className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mt-4 flex items-start"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-medium">Could not load financial news</p>
-                <p className="text-sm">Please check your connection or try again later.</p>
-              </div>
-            </motion.div>
-          )}
-        </motion.div>
-        
-        {/* Loading state */}
-        {isLoading && (
+      <motion.div 
+        className="py-16 bg-white"
+        initial="hidden"
+        animate="visible"
+        variants={pageTransition}
+      >
+        <div className="container mx-auto">
           <motion.div 
+            className="text-center mb-12"
             variants={itemFadeIn}
-            className="space-y-8"
           >
-            <div className="space-y-3">
-              <Skeleton className="h-8 w-64" />
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-2">
-                  <Skeleton className="h-64 md:h-72" />
-                  <div className="p-8 space-y-4">
-                    <Skeleton className="h-6 w-32" />
-                    <Skeleton className="h-8 w-full" />
-                    <Skeleton className="h-24 w-full" />
-                    <Skeleton className="h-10 w-40" />
-                  </div>
-                </div>
+            <h1 className="font-montserrat font-bold text-3xl md:text-5xl text-primary mb-4">Financial News & Insights</h1>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Stay informed with our latest articles, market updates, and investment insights to make better financial decisions.
+            </p>
+          </motion.div>
+          
+          {/* Search and Filter Section */}
+          <motion.div 
+            className="mb-10 bg-gray-100 p-6 rounded-lg"
+            variants={itemFadeIn}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="col-span-2">
+                <Input 
+                  placeholder="Search articles..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div>
+                <Select 
+                  value={categoryFilter}
+                  onValueChange={setCategoryFilter}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map(category => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
-            
-            <div className="space-y-3">
-              <Skeleton className="h-8 w-64" />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[1, 2, 3, 4, 5, 6].map(i => (
-                  <div key={i} className="bg-white shadow-md rounded-lg overflow-hidden">
-                    <Skeleton className="h-48 w-full" />
-                    <div className="p-6 space-y-3">
-                      <Skeleton className="h-5 w-24" />
-                      <Skeleton className="h-6 w-full" />
-                      <Skeleton className="h-16 w-full" />
-                      <Skeleton className="h-4 w-24" />
+          </motion.div>
+          
+          {/* Loading State */}
+          {isLoading && (
+            <motion.div 
+              variants={itemFadeIn}
+              className="space-y-8"
+            >
+              <div className="space-y-3">
+                <Skeleton className="h-8 w-64" />
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                  <div className="grid grid-cols-1 md:grid-cols-2">
+                    <Skeleton className="h-64 md:h-72" />
+                    <div className="p-8 space-y-4">
+                      <Skeleton className="h-6 w-32" />
+                      <Skeleton className="h-8 w-full" />
+                      <Skeleton className="h-24 w-full" />
+                      <Skeleton className="h-10 w-40" />
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-        
-        {/* Featured Article */}
-        {!isLoading && filteredNews.length > 0 && (
-          <motion.div 
-            className="mb-16"
-            variants={itemFadeIn}
-          >
-            <h2 className="font-montserrat font-bold text-2xl text-primary mb-6">Featured Article</h2>
-            <motion.div 
-              className="bg-white rounded-lg shadow-lg overflow-hidden"
-              whileHover={{ y: -5 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="h-64 md:h-auto bg-gray-200 overflow-hidden">
-                  <motion.img 
-                    src={filteredNews[0].image} 
-                    alt={filteredNews[0].title} 
-                    className="w-full h-full object-cover"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.5 }}
-                  />
-                </div>
-                <div className="p-8">
-                  <div className="flex items-center mb-2">
-                    <Badge variant="secondary" className="bg-primary text-white mr-2">{filteredNews[0].category}</Badge>
-                    <span className="text-gray-500 text-sm">{filteredNews[0].date}</span>
-                  </div>
-                  <h3 className="font-montserrat font-bold text-2xl text-primary mb-3">
-                    {filteredNews[0].title}
-                  </h3>
-                  <p className="text-gray-600 mb-6">
-                    {filteredNews[0].excerpt}
-                  </p>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button 
-                      className="bg-secondary hover:bg-secondary/90 text-primary font-bold"
-                      asChild
-                    >
-                      <a href={filteredNews[0].url} target="_blank" rel="noopener noreferrer">
-                        Read Full Article
-                      </a>
-                    </Button>
-                  </motion.div>
                 </div>
               </div>
             </motion.div>
-          </motion.div>
-        )}
-        
-        {/* All Articles */}
-        {!isLoading && (
-          <motion.div variants={itemFadeIn}>
-            <h2 className="font-montserrat font-bold text-2xl text-primary mb-6">Latest Articles</h2>
-            
-            {filteredNews.length === 0 ? (
+          )}
+
+          {/* Articles Section */}
+          {!isLoading && filteredNews.length > 0 && (
+            <>
+              {/* Featured Article */}
               <motion.div 
-                className="text-center py-12 bg-gray-100 rounded-lg"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <h3 className="text-xl font-montserrat text-primary mb-2">No articles found</h3>
-                <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
-              </motion.div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredNews.slice(1).map((article, index) => (
-                  <motion.div 
-                    key={article.id}
-                    variants={cardVariants}
-                    initial="hidden"
-                    animate="visible"
-                    whileHover="hover"
-                    custom={index}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <Card className="overflow-hidden h-full flex flex-col">
-                      <div className="h-48 bg-gray-200 relative overflow-hidden">
-                        <motion.img 
-                          src={article.image} 
-                          alt={article.title} 
-                          className="w-full h-full object-cover"
-                          variants={imageHover}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                      </div>
-                      <CardContent className="p-6 flex flex-col flex-grow">
-                        <div className="flex items-center mb-2">
-                          <Badge variant="secondary" className="bg-primary text-white mr-2">{article.category}</Badge>
-                          <span className="text-gray-500 text-sm">{article.date}</span>
-                        </div>
-                        <h3 className="font-montserrat font-bold text-xl text-primary mb-2">
-                          {article.title}
-                        </h3>
-                        <p className="text-gray-600 mb-4 flex-grow">
-                          {article.excerpt.length > 120 
-                            ? `${article.excerpt.substring(0, 120)}...` 
-                            : article.excerpt}
-                        </p>
-                        <a href={article.url} className="text-secondary font-bold hover:underline flex items-center mt-auto group" target="_blank" rel="noopener noreferrer">
-                          Read More 
-                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </a>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-            
-            {filteredNews.length > 6 && (
-              <motion.div 
-                className="mt-12 text-center"
+                className="mb-16"
                 variants={itemFadeIn}
               >
-                <Button 
-                  variant="outline" 
-                  className="mr-2"
-                  onClick={() => setPage(Math.max(1, page - 1))}
-                  disabled={page === 1}
+                <h2 className="font-montserrat font-bold text-2xl text-primary mb-6">Featured Article</h2>
+                <motion.div 
+                  className="bg-white rounded-lg shadow-lg overflow-hidden"
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  Previous
-                </Button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
-                  <Button 
-                    key={pageNum}
-                    variant="outline" 
-                    className={cn(
-                      "mr-2", 
-                      { "bg-primary text-white": pageNum === page }
-                    )}
-                    onClick={() => setPage(pageNum)}
-                  >
-                    {pageNum}
-                  </Button>
-                ))}
-                <Button 
-                  variant="outline"
-                  onClick={() => setPage(Math.min(totalPages, page + 1))}
-                  disabled={page === totalPages}
-                >
-                  Next
-                </Button>
-              </motion.div>
-            )}
-          </motion.div>
-        )}
-        
-        {/* Newsletter Subscription */}
-        <motion.div 
-          className="mt-16 bg-primary text-white rounded-lg p-10"
-          variants={itemFadeIn}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="mb-6 md:mb-0 md:mr-8 md:w-2/3">
-              <h3 className="font-montserrat font-bold text-2xl mb-3">Stay Updated</h3>
-              <p className="text-white/90">
-                Subscribe to our newsletter to receive the latest financial news, market insights, and investment opportunities directly in your inbox.
-              </p>
-            </div>
-            <div className="w-full md:w-1/3">
-              <form className="flex">
-                <Input 
-                  type="email" 
-                  placeholder="Your email address" 
-                  className="rounded-r-none text-foreground" 
-                  required
-                />
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button type="submit" className="bg-secondary hover:bg-secondary/90 text-primary rounded-l-none">
-                    Subscribe
-                  </Button>
+                  <div className="grid grid-cols-1 md:grid-cols-2">
+                    <div className="h-64 md:h-auto bg-gray-200 overflow-hidden">
+                      <motion.img 
+                        src={filteredNews[0].image} 
+                        alt={filteredNews[0].title} 
+                        className="w-full h-full object-cover"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.5 }}
+                      />
+                    </div>
+                    <div className="p-8">
+                      <div className="flex items-center mb-2">
+                        <Badge variant="secondary" className="bg-primary text-white mr-2">{filteredNews[0].category}</Badge>
+                        <span className="text-gray-500 text-sm">{filteredNews[0].date}</span>
+                      </div>
+                      <h3 className="font-montserrat font-bold text-2xl text-primary mb-3">
+                        {filteredNews[0].title}
+                      </h3>
+                      <p className="text-gray-600 mb-6">
+                        {filteredNews[0].excerpt}
+                      </p>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button 
+                          className="bg-secondary hover:bg-secondary/90 text-primary font-bold"
+                          asChild
+                        >
+                          <a href={filteredNews[0].url} target="_blank" rel="noopener noreferrer">
+                            Read Full Article
+                          </a>
+                        </Button>
+                      </motion.div>
+                    </div>
+                  </div>
                 </motion.div>
-              </form>
-              <p className="text-xs text-white/70 mt-2">
-                By subscribing, you agree to our Privacy Policy and consent to receive updates from our company.
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </motion.div>
+              </motion.div>
+
+              {/* Latest Articles */}
+              <motion.div variants={itemFadeIn}>
+                <h2 className="font-montserrat font-bold text-2xl text-primary mb-6">Latest Articles</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {filteredNews.slice(1).map((article, index) => (
+                    <motion.div 
+                      key={article.id}
+                      variants={cardVariants}
+                      initial="hidden"
+                      animate="visible"
+                      whileHover="hover"
+                      custom={index}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <Card className="overflow-hidden h-full flex flex-col">
+                        <div className="h-48 bg-gray-200 relative overflow-hidden">
+                          <motion.img 
+                            src={article.image} 
+                            alt={article.title} 
+                            className="w-full h-full object-cover"
+                            variants={imageHover}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                        </div>
+                        <CardContent className="p-6 flex flex-col flex-grow">
+                          <div className="flex items-center mb-2">
+                            <Badge variant="secondary" className="bg-primary text-white mr-2">{article.category}</Badge>
+                            <span className="text-gray-500 text-sm">{article.date}</span>
+                          </div>
+                          <h3 className="font-montserrat font-bold text-xl text-primary mb-2">
+                            {article.title}
+                          </h3>
+                          <p className="text-gray-600 mb-4 flex-grow">
+                            {article.excerpt.length > 120 
+                              ? `${article.excerpt.substring(0, 120)}...` 
+                              : article.excerpt}
+                          </p>
+                          <a href={article.url} className="text-secondary font-bold hover:underline flex items-center mt-auto group" target="_blank" rel="noopener noreferrer">
+                            Read More 
+                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          </a>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </>
+          )}
+        </div>
+      </motion.div>
     </PageTransition>
   );
 };
