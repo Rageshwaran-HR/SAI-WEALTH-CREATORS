@@ -94,75 +94,78 @@ const News = () => {
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(9);
   
-  // Fetch Alpha Vantage financial news
-  const { 
-    data: alphaVantageNews, 
-    isLoading: isLoadingAV,
-    isError: isErrorAV,
-    error: errorAV,
-    refetch: refetchAV
-  } = useQuery({
-    queryKey: ['/api/finance/news/financial'],
-    queryFn: async () => {
-      try {
-        const res = await fetch('/api/finance/news/financial');
-        if (!res.ok) throw new Error('Failed to fetch financial news');
-        const data = await res.json();
-        console.log('Financial news fetched successfully:', data); // Log success
-        return data as AlphaVantageNewsItem[];
-      } catch (error) {
-        console.error('Error fetching financial news:', error);
-        throw error; // Ensure the error is propagated
+// Fetch Alpha Vantage financial news
+const {
+  data: alphaVantageNewsRaw,
+  isLoading: isLoadingAV,
+  isError: isErrorAV,
+  error: errorAV,
+  refetch: refetchAV,
+} = useQuery({
+  queryKey: ['/api/finance/news/financial'],
+  queryFn: async () => {
+    try {
+      const res = await fetch('/api/finance/news/financial');
+      if (!res.ok) throw new Error('Failed to fetch financial news');
+      const data = await res.json();
+
+      if (!Array.isArray(data)) {
+        console.warn('Invalid Alpha Vantage news data:', data);
+        return [];
       }
+
+      console.log('Financial news fetched successfully:', data);
+      return data as AlphaVantageNewsItem[];
+    } catch (error) {
+      console.error('Error fetching financial news:', error);
+      return [];
     }
-  });
-  
+  },
+});
+
 // Fetch Financial Modeling Prep market news
-const { 
-  data: fmpNews, 
+const {
+  data: fmpNews,
   isLoading: isLoadingFMP,
   isError: isErrorFMP,
   error: errorFMP,
-  refetch: refetchFMP
+  refetch: refetchFMP,
 } = useQuery({
   queryKey: ['/api/finance/news/market'],
   queryFn: async () => {
-  try {
-    const res = await fetch('/api/finance/news/market', {
-      method: 'GET',
-      headers: {
-        'Cache-Control': 'no-cache',
-        Pragma: 'no-cache',
-      },
-    });
+    try {
+      const res = await fetch('/api/finance/news/market', {
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+        },
+      });
 
-    if (!res.ok) throw new Error('Failed to fetch market news');
-    const data = await res.json();
+      if (!res.ok) throw new Error('Failed to fetch market news');
+      const data = await res.json();
 
-    if (!data || !Array.isArray(data)) {
-      console.warn('Market news data is invalid:', data);
+      if (!Array.isArray(data)) {
+        console.warn('Market news data is invalid:', data);
+        return [];
+      }
+
+      console.log('Market news fetched successfully:', data);
+      return data;
+    } catch (error) {
+      console.error('Error fetching market news:', error);
       return [];
     }
-
-    console.log('Market news fetched successfully:', data);
-    return data;
-
-  } catch (error) {
-    console.error('Error fetching market news:', error);
-    throw error;
-  }
-}
-
+  },
 });
 
-  
-  // Convert Alpha Vantage news to our unified format
-const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNews)
-  ? alphaVantageNews.map((item: AlphaVantageNewsItem, index: number) => {
-      let category = "Market News";
+// Process Alpha Vantage news to unified format
+const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNewsRaw)
+  ? alphaVantageNewsRaw.map((item: AlphaVantageNewsItem, index: number) => {
+      let category = 'Market News';
       if (Array.isArray(item.topics) && item.topics.length > 0) {
-        const sortedTopics = [...item.topics].sort((a, b) =>
-          parseFloat(b.relevance_score) - parseFloat(a.relevance_score)
+        const sortedTopics = [...item.topics].sort(
+          (a, b) => parseFloat(b.relevance_score) - parseFloat(a.relevance_score)
         );
         category = sortedTopics[0].topic;
       }
@@ -179,7 +182,7 @@ const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNews)
         slug: generateSlug(item.title),
       };
     })
-  : []; // Fallback to an empty array if alphaVantageNews is not an array
+  : [];
 
 // Convert FMP news to our unified format
 const processedFMPNews: NewsItem[] = Array.isArray(fmpNews)
