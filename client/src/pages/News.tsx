@@ -157,16 +157,16 @@ const {
 
   
   // Convert Alpha Vantage news to our unified format
-const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNews) && alphaVantageNews.length > 0
+const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNews)
   ? alphaVantageNews.map((item: AlphaVantageNewsItem, index: number) => {
       let category = "Market News";
       if (Array.isArray(item.topics) && item.topics.length > 0) {
-        const sortedTopics = [...item.topics].sort((a, b) => 
+        const sortedTopics = [...item.topics].sort((a, b) =>
           parseFloat(b.relevance_score) - parseFloat(a.relevance_score)
         );
         category = sortedTopics[0].topic;
       }
-      
+
       return {
         id: `av-${index}`,
         title: item.title,
@@ -176,26 +176,27 @@ const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNews) &&
         image: item.banner_image || DEFAULT_IMAGE,
         url: item.url,
         source: item.source,
-        slug: generateSlug(item.title)
+        slug: generateSlug(item.title),
       };
     })
   : [];
 
-  
-  // Convert FMP news to our unified format
-  const processedFMPNews: NewsItem[] = (fmpNews || []).map((item: FMPNewsItem, index: number) => {
-    return {
-      id: `fmp-${index}`,
-      title: item.title,
-      excerpt: item.text,
-      category: item.symbol ? "Stocks" : "Market News",
-      date: formatDate(item.publishedDate),
-      image: item.image || DEFAULT_IMAGE,
-      url: item.url,
-      source: item.site,
-      slug: generateSlug(item.title)
-    };
-  });
+// Convert FMP news to our unified format
+const processedFMPNews: NewsItem[] = Array.isArray(fmpNews)
+  ? fmpNews.map((item: FMPNewsItem, index: number) => {
+      return {
+        id: `fmp-${index}`,
+        title: item.title,
+        excerpt: item.text,
+        category: item.symbol ? "Stocks" : "Market News",
+        date: formatDate(item.publishedDate),
+        image: item.image || DEFAULT_IMAGE,
+        url: item.url,
+        source: item.site,
+        slug: generateSlug(item.title),
+      };
+    })
+  : [];
   
   // Combine both news sources
   const allNews = [...processedAlphaVantageNews, ...processedFMPNews];
