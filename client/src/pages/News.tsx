@@ -179,7 +179,7 @@ const processedAlphaVantageNews: NewsItem[] = Array.isArray(alphaVantageNews)
         slug: generateSlug(item.title),
       };
     })
-  : [];
+  : []; // Fallback to an empty array if alphaVantageNews is not an array
 
 // Convert FMP news to our unified format
 const processedFMPNews: NewsItem[] = Array.isArray(fmpNews)
@@ -196,7 +196,7 @@ const processedFMPNews: NewsItem[] = Array.isArray(fmpNews)
         slug: generateSlug(item.title),
       };
     })
-  : [];
+  : []; // Fallback to an empty array if fmpNews is not an array
   
   // Combine both news sources
   const allNews = [...processedAlphaVantageNews, ...processedFMPNews];
